@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static com.itskyconsulting.floatmath.FloatMathExt.*;
+
 /**
  * Unit test for simple App.
  */
@@ -14,17 +16,22 @@ public class FloatMathExtTest {
         if (Double.isInfinite(d)) {
             return;
         }
-        if (Double.isInfinite(d)) {
+        if (Double.isNaN(d)) {
             return;
         }
         assertTrue(s, Math.abs(d) > r);
+    }
+
+    /** helper function: make sure that a function that would be +/- infinity mathematically is actually at least NaN, +/-Infinity or large by absolute value */
+    private void assertNaN(String s, double d) {
+        assertTrue(s + " d=" + d, Double.isNaN(d));
     }
 
     /** helper function for testCotReg* */
     private void checkCotReg(int l, double delta) {
         for (int i = -l; i <= l; i++) {
             double d = i / 10.0 + 1e-3;
-            double p = Math.tan(d) * FloatMathExt.cot(d);
+            double p = Math.tan(d) * cot(d);
             assertEquals("d=" + d + " p=" + p, 1.0, p, delta);
         }
     }
@@ -65,8 +72,8 @@ public class FloatMathExtTest {
     @Test
     public void testCotSpecial() {
         for (int i = -50; i < 50; i++) {
-            double d = i * Math.PI  + FloatMathExt.HALF_PI;
-            double z = FloatMathExt.cot(d);
+            double d = i * Math.PI  + HALF_PI;
+            double z = cot(d);
             assertEquals("d=" + d + " z=" + z, 0.0, z, 1e-12);
         }
     }
@@ -79,7 +86,7 @@ public class FloatMathExtTest {
     private void checkCotBad(int l, double r) {
         for (int i = -l; i < l; i++) {
             double d = i * Math.PI;
-            double n = FloatMathExt.cot(d);
+            double n = cot(d);
             System.out.println("i=" + i + " d=" + d + " n=" + n);
             assertInfinite("d=" + d + " n=" + n, n, r);
         }
@@ -122,7 +129,7 @@ public class FloatMathExtTest {
     public void testSecReg() {
         for (int i = -100; i <= 100; i++) {
             double d = i / 10.0 + 1e-3;
-            double p = Math.cos(d) * FloatMathExt.sec(d);
+            double p = Math.cos(d) * sec(d);
             assertEquals("d=" + d + " p=" + p, 1.0, p, 1e-12);
         }
     }
@@ -134,8 +141,8 @@ public class FloatMathExtTest {
     public void testSecEven() {
         for (int i = 0; i <= 100; i++) {
             double d = i / 10.0 + 1e-3;
-            double s1 = FloatMathExt.sec(d);
-            double s2 = FloatMathExt.sec(-d);
+            double s1 = sec(d);
+            double s2 = sec(-d);
             assertEquals("d=" + d + " s1=" + s1 + " s2=" + s2, s1, s2, 1e-100);
         }
     }
@@ -147,7 +154,7 @@ public class FloatMathExtTest {
     public void testCscReg() {
         for (int i = 0; i < 100; i++) {
             double d = i / 10.0 + 1e-3;
-            double p = Math.sin(d) * FloatMathExt.csc(d);
+            double p = Math.sin(d) * csc(d);
             assertEquals("d=" + d + " p=" + p, 1.0, p, 1e-12);
         }
     }
@@ -159,8 +166,8 @@ public class FloatMathExtTest {
     public void testCscOdd() {
         for (int i = 0; i <= 100; i++) {
             double d = i / 10.0 + 1e-3;
-            double s1 = -FloatMathExt.csc(d);
-            double s2 = FloatMathExt.csc(-d);
+            double s1 = -csc(d);
+            double s2 = csc(-d);
             assertEquals("d=" + d + " s1=" + s1 + " s2=" + s2, s1, s2, 1e-100);
         }
     }
@@ -176,8 +183,8 @@ public class FloatMathExtTest {
             double d0 = (i + 0.5) * step;
             for (int j = -m; j <= m; j++) {
                 double d = d0 + Math.PI * j;
-                double c = FloatMathExt.cot(d);
-                double dd = FloatMathExt.acot(c);
+                double c = cot(d);
+                double dd = acot(c);
                 assertEquals("i=" + i + " j=" + j + " d0=" + d0 + " d=" + d + " c=" + c + " dd=" + dd, d0, dd, delta);
             }
         }
@@ -219,8 +226,8 @@ public class FloatMathExtTest {
      */
     @Test
     public void testACotSpecial() {
-        double d = FloatMathExt.acot(0.0);
-        assertEquals("d=" + d, FloatMathExt.HALF_PI, d, 1e-100);
+        double d = acot(0.0);
+        assertEquals("d=" + d, HALF_PI, d, 1e-100);
     }
 
 
@@ -232,8 +239,8 @@ public class FloatMathExtTest {
     private void checkCotOfAcotReg(int l, double delta) {
         for (int i = -l; i < l; i++) {
             double d = i * 0.1;
-            double a = FloatMathExt.acot(d);
-            double dd = FloatMathExt.cot(a);
+            double a = acot(d);
+            double dd = cot(a);
             assertEquals("i=" + i + " d=" + d + " a=" + a + " dd=" + dd, d, dd, delta);
         }
     }
@@ -275,8 +282,8 @@ public class FloatMathExtTest {
     public void testASecOfSecReg() {
         for (int i = 0; i < 100; i++) {
             double d = Math.PI / 100 * i + Math.PI / 200;
-            double s = FloatMathExt.sec(d);
-            double dd = FloatMathExt.asec(s);
+            double s = sec(d);
+            double dd = asec(s);
             assertEquals("i=" + i + " d=" + d + " s=" + s + " dd=" + dd, d, dd, 1e-14);
         }
     }
@@ -291,8 +298,8 @@ public class FloatMathExtTest {
             if (Math.abs(d) < 1.0) {
                 continue;
             }
-            double a = FloatMathExt.asec(d);
-            double dd = FloatMathExt.sec(a);
+            double a = asec(d);
+            double dd = sec(a);
             assertEquals("i=" + i + " d=" + d + " a=" + a + " dd=" + dd, d, dd, 1e-11);
         }
     }
@@ -304,8 +311,8 @@ public class FloatMathExtTest {
     public void testACscOfCscReg() {
         for (int i = -50; i < 50; i++) {
             double d = Math.PI / 100 * i + Math.PI / 200;
-            double s = FloatMathExt.csc(d);
-            double dd = FloatMathExt.acsc(s);
+            double s = csc(d);
+            double dd = acsc(s);
             assertEquals("i=" + i + " d=" + d + " s=" + s + " dd=" + dd, d, dd, 1e-14);
         }
     }
@@ -320,10 +327,355 @@ public class FloatMathExtTest {
             if (Math.abs(d) < 1.0) {
                 continue;
             }
-            double a = FloatMathExt.acsc(d);
-            double dd = FloatMathExt.csc(a);
+            double a = acsc(d);
+            double dd = csc(a);
             assertEquals("i=" + i + " d=" + d + " a=" + a + " dd=" + dd, d, dd, 1e-11);
         }
+    }
+
+    /** test sind for some well known values */
+    @Test
+    public void testSind() {
+        assertEquals(0.0, sind(0), 1e-100);
+        assertEquals(0.5, sind(30), 1e-16);
+        assertEquals(Math.sqrt(2)/2, sind(45), 1e-15);
+        assertEquals(Math.sqrt(3)/2, sind(60), 1e-20);
+        assertEquals(1.0, sind(90), 1e-100);
+    }
+
+    /** test cosd for some well known values */
+    @Test
+    public void testCosd() {
+        assertEquals(0.0, cosd(90), 1e-16);
+        assertEquals(0.5, cosd(60), 1e-15);
+        assertEquals(Math.sqrt(2)/2, cosd(45), 1e-15);
+        assertEquals(Math.sqrt(3)/2, cosd(30), 1e-15);
+        assertEquals(1.0, cosd(0), 1e-100);
+    }
+
+    /** test tand for some well known values */
+    @Test
+    public void testTand() {
+        assertEquals(-Math.sqrt(3), tand(-60), 1e-15);
+        assertEquals(-1.0, tand(-45), 1e-15);
+        assertEquals(-Math.sqrt(3)/3, tand(-30), 1e-100);
+        assertEquals(0.0, tand(0), 1e-100);
+        assertEquals(Math.sqrt(3)/3, tand(30), 1e-100);
+        assertEquals(1.0, tand(45), 1e-15);
+        assertEquals(Math.sqrt(3), tand(60), 1e-15);
+    }
+
+    /** test cotd for some well known values */
+    @Test
+    public void testCotd() {
+        assertEquals(Math.sqrt(3), cotd(30), 1e-15);
+        assertEquals(1.0, cotd(45), 1e-15);
+        assertEquals(Math.sqrt(3)/3, cotd(60), 1e-100);
+        assertEquals(0.0, cotd(90), 1e-100);
+        assertEquals(-Math.sqrt(3)/3, cotd(120), 1e-100);
+        assertEquals(-1.0, cotd(135), 1e-15);
+        assertEquals(-Math.sqrt(3), cotd(150), 1e-15);
+    }
+
+    /** test secd for some well known values */
+    @Test
+    public void testSecd() {
+        assertEquals(2.0, secd(60), 1e-15);
+        assertEquals(Math.sqrt(2), secd(45), 1e-15);
+        assertEquals(2*Math.sqrt(3)/3, secd(30), 1e-15);
+        assertEquals(1.0, secd(0), 1e-100);
+    }
+
+    /** test cscd for some well known values */
+    @Test
+    public void testCscd() {
+        assertEquals(2.0, cscd(30), 1e-15);
+        assertEquals(Math.sqrt(2), cscd(45), 1e-15);
+        assertEquals(2*Math.sqrt(3)/3, cscd(60), 1e-15);
+        assertEquals(1.0, cscd(90), 1e-100);
+    }
+
+    /** test asind for some well known values */
+    @Test
+    public void testAsind() {
+        assertEquals(0, asind(0.0), 1e-100);
+        assertEquals(30, asind(0.5), 1e-14);
+        assertEquals(45, asind(Math.sqrt(2)/2), 1e-14);
+        assertEquals(60, asind(Math.sqrt(3)/2), 1e-14);
+        assertEquals(90, asind(1.0), 1e-100);
+    }
+
+    /** test acosd for some well known values */
+    @Test
+    public void testAcosd() {
+        assertEquals(90, acosd(0.0), 1e-16);
+        assertEquals(60, acosd(0.5), 1e-14);
+        assertEquals(45, acosd(Math.sqrt(2)/2), 1e-15);
+        assertEquals(30, acosd(Math.sqrt(3)/2), 1e-14);
+        assertEquals(0, acosd(1.0), 1e-100);
+    }
+
+    /** test atand for some well known values */
+    @Test
+    public void testAtand() {
+        assertEquals(-60, atand(-Math.sqrt(3)), 1e-14);
+        assertEquals(-45, atand(-1.0), 1e-15);
+        assertEquals(-30, atand(-Math.sqrt(3)/3), 1e-14);
+        assertEquals(0, atand(0.0), 1e-100);
+        assertEquals(30, atand(Math.sqrt(3)/3), 1e-14);
+        assertEquals(45, atand(1.0), 1e-15);
+        assertEquals(60, atand(Math.sqrt(3)), 1e-14);
+    }
+
+    /** test acotd for some well known values */
+    @Test
+    public void testAcotd() {
+        assertEquals(30, acotd(Math.sqrt(3)), 1e-14);
+        assertEquals(45, acotd(1.0), 1e-15);
+        assertEquals(60, acotd(Math.sqrt(3)/3), 1e-100);
+        assertEquals(90, acotd(0.0), 1e-100);
+        assertEquals(120, acotd(-Math.sqrt(3)/3), 1e-100);
+        assertEquals(135, acotd(-1.0), 1e-15);
+        assertEquals(150, acotd(-Math.sqrt(3)), 1e-15);
+    }
+
+    /** test asecd for some well known values */
+    @Test
+    public void testAsecd() {
+        assertEquals(60, asecd(2.0), 1e-14);
+        assertEquals(45, asecd(Math.sqrt(2)), 1e-14);
+        assertEquals(30, asecd(2*Math.sqrt(3)/3), 2e-14);
+        assertEquals(0, asecd(1.0), 1e-100);
+    }
+
+    /** test acscd for some well known values */
+    @Test
+    public void testAcscd() {
+        assertEquals(30, acscd(2.0), 1e-14);
+        assertEquals(45, acscd(Math.sqrt(2)), 1e-14);
+        assertEquals(60, acscd(2*Math.sqrt(3)/3), 1e-14);
+        assertEquals(90, acscd(1.0), 1e-100);
+    }
+
+    /** test coth(x)*tanh(x) = 1 for x != 0 */
+    @Test
+    public void testCoth() {
+        for (int i = -3; i <= 3; i++) {
+            if (i == 0) {
+                continue;
+            }
+            double x = i;
+            assertEquals("i=" + i + " x=" + x, 1.0, Math.tanh(x) * coth(x), 1e-14);
+        }
+    }
+
+    /** test sech(x)*cos(x) = 1 */
+    @Test
+    public void testSech() {
+        for (int i = -3; i <= 3; i++) {
+            double x = i;
+            assertEquals("i=" + i + " x=" + x, 1.0, Math.cosh(x) * sech(x), 1e-15);
+        }
+    }
+
+    /** test csch(x)*sinh(x) = 1 for x != 0 */
+    @Test
+    public void testCsch() {
+        for (int i = -3; i <= 3; i++) {
+            if (i == 0) {
+                continue;
+            }
+            double x = i;
+            assertEquals("i=" + i + " x=" + x, 1.0, Math.sinh(x) * csch(x), 1e-20);
+        }
+    }
+
+    /** test asinh(sinh(x)) = x */
+    @Test
+    public void testAsinhOfSinh() {
+        for (int i = -3; i <= 3; i++) {
+            double x = i;
+            assertEquals("i=" + i + " x=" + x, x, asinh(Math.sinh(x)), 2e-14);
+        }
+
+    }
+
+    /** test sinh(asinh(x)) = x */
+    @Test
+    public void testSinhOfAsinh() {
+        for (int i = -3; i <= 3; i++) {
+            double x = i;
+            assertEquals("i=" + i + " x=" + x, x, Math.sinh(asinh(x)), 1e-14);
+        }
+
+    }
+
+    /** test acosh(cosh(x)) = |x| */
+    @Test
+    public void testAcoshOfCosh() {
+        for (int i = -3; i <= 3; i++) {
+            double x = i;
+            assertEquals("i=" + i + " x=" + x, Math.abs(x), acosh(Math.cosh(x)), 2e-14);
+        }
+
+    }
+
+    /** test cosh(acosh(x)) = x for x >= 1 */
+    @Test
+    public void testCoshOfAcosh() {
+        for (int i = 1; i <= 10; i++) {
+            double x = i;
+            assertEquals("i=" + i + " x=" + x, x, Math.cosh(acosh(x)), 1e-14);
+        }
+
+    }
+
+    /** test acosh(x) = NaN for x < 1 */
+    @Test
+    public void testBadAcosh() {
+        for (int i = -100; i < 10; i++) {
+            double x = i / 10.0;
+            assertNaN("i=" + i + " x=" + x, acosh(x));
+        }
+    }
+
+    /** test atanh(tanh(x))=x */
+    @Test
+    public void testAtanhOfTanh() {
+        for (int i = -3; i <= 3; i++) {
+            double x = i;
+            assertEquals("i=" + i + " x=" + x, x, atanh(Math.tanh(x)), 2e-14);
+        }
+
+    }
+
+    /** test tanh(atanh(x))=x for -1 < x < 1 */
+    @Test
+    public void testTanhOfAtanh() {
+        for (int i = -9; i <= 9; i++) {
+            double x = i / 10.0;
+            double a = atanh(x);
+            assertEquals("i=" + i + " x=" + x + " a=" + a, x, Math.tanh(a), 1e-14);
+        }
+
+    }
+
+    /** test atanh(x) = NaN for x <= -1 or x >= 1 */
+    @Test
+    public void testBadAtanh() {
+        for (int i = -50; i <= 50; i++) {
+            if (-10 < i && i < 10) {
+                continue;
+            }
+            double x = i / 10.0;
+            assertNaN("i=" + i + " x=" + x, atanh(x));
+        }
+    }
+
+    /** test acoth(coth(x)) = x for x != 0 */
+    @Test
+    public void testAcothOfCoth() {
+        for (int i = -5; i <= 5; i++) {
+            if (i == 0) {
+                continue;
+            }
+            double x = i;
+            double t = coth(x);
+            assertEquals("i=" + i + " x=" + x + " t=" + t, x, acoth(t), 1e-12);
+        }
+
+    }
+
+    /** test coth(acoth(x)) = x for x < -1 or x > 1 */
+    @Test
+    public void testCothOfAcoth() {
+        for (int i = -100; i <= 100; i++) {
+            if (-10 <= i && i <= 10) {
+                continue;
+            }
+            double x = i / 10.0;
+            double a = acoth(x);
+            assertEquals("i=" + i + " x=" + x + " a=" + a, x, coth(a), 2e-14);
+        }
+
+    }
+
+    /** test acoth(x) = NaN for -1 <= x <= 1 */
+    @Test
+    public void testBadAcoth() {
+        for (int i = -10; i <= 10; i++) {
+            double x = i / 10.0;
+            assertNaN("i=" + i + " x=" + x, acoth(x));
+        }
+    }
+
+    /** test asech(sech(x)) = x */
+    @Test
+    public void testAsechOfSech() {
+        for (int i = -3; i <= 3; i++) {
+            double x = i;
+            double s = sech(x);
+			assertEquals("i=" + i + " x=" + x + " s=" + s, Math.abs(x), asech(s), 2e-14);
+        }
+
+    }
+
+    /** test sech(asech(x)) = x for 0 < x <= 1 */
+    @Test
+    public void testSechOfAsech() {
+        for (int i = 1; i <= 10; i++) {
+            double x = i / 10.0;
+            double a = asech(x);
+            assertEquals("i=" + i + " x=" + x + " a=" + a, x, sech(a), 1e-14);
+        }
+
+    }
+
+    /** test asech(x) = NaN for x <= 0 or x > 1 */
+    @Test
+    public void testBadAsech() {
+        for (int i = -50; i <= 50; i++) {
+            if (0 < i && i <= 10) {
+                continue;
+            }
+            double x = i / 10.0;
+            assertNaN("i=" + i + " x=" + x, asech(x));
+        }
+    }
+
+    /** test acsch(csch(x)) = x */
+    @Test
+    public void testAcschOfCsch() {
+        for (int i = -3; i <= 3; i++) {
+        	if (i == 0) {
+        			continue;
+        	}
+            double x = i;
+            double s = csch(x);
+            System.out.println("x=" + x + " s=" + s);
+            assertEquals("i=" + i + " x=" + x + " s=" + s, x, acsch(s), 2e-14);
+        }
+
+    }
+
+    /** test csch(acsch(x)) = x for x != 0 */
+    @Test
+    public void testCschOfAcsch() {
+        for (int i = -50; i <= 50; i++) {
+            if (i == 0) {
+                continue;
+            }
+            double x = i / 10.0;
+            double a = acsch(x);
+            assertEquals("i=" + i + " x=" + x + " a=" + a, x, csch(a), 1e-14);
+        }
+
+    }
+
+    /** test acsc(0) = NaN */
+    @Test
+    public void testBadAcsch() {
+        assertNaN("x=0", acsch(0));
     }
 
 }
