@@ -1,7 +1,17 @@
+// -*- coding: utf-8-unix -*- Юникод/UTF-8
+// (C) Karl Brodowsky 2016
+// GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 of February 1999
+
 package com.itskyconsulting.floatmath;
 
 /**
  * Floating point functions that we would expect in the standard library
+ *
+ * Already in Math:
+ * sin, cos, tan, asin, acos, atan
+ * log, exp
+ * cbrt
+ * tan2
  *
  */
 public class FloatMathExt {
@@ -9,33 +19,40 @@ public class FloatMathExt {
     /** pi/2.  This is used so often that it should not be recalculated each time */
     public static final double HALF_PI = Math.PI/2;
 
+    /** factor to transform degrees to radiens and vice versa */
     public static final double DEG_RAD_FACTOR = Math.PI / 180;
-    
+
+    /** log(10) */
+    public static final double LOG_10 = Math.log(10);
+
+    /** log(2) */
+    public static final double LOG_2 = Math.log(2);
+
     /** cot(x) = cos(x)/sin(x). This is often calculated using 1/tan(x), but that does not work for all x. This implementation works for all x for which cot should be defined. */
     public static double cot(double x) {
         return Math.tan(HALF_PI - x);
     }
-    
+
     /** sec(x) = 1/cos(x) */
     public static double sec(double x) {
         return 1/Math.cos(x);
     }
-    
+
     /** csc(x) = 1/sin(x) */
     public static double csc(double x) {
         return 1/Math.sin(x);
     }
-    
+
     /** inverse of cot */
     public static double acot(double x) {
         return HALF_PI - Math.atan(x);
     }
-    
+
     /** inverse of sec */
     public static double asec(double x) {
         return Math.acos(1/x);
     }
-    
+
     /** inverse of csc */
     public static double acsc(double x) {
         return Math.asin(1/x);
@@ -46,12 +63,12 @@ public class FloatMathExt {
     public static double sind(double x) {
         return Math.sin(x * DEG_RAD_FACTOR);
     }
-    
+
     /** cos with degrees */
     public static double cosd(double x) {
         return Math.cos(x * DEG_RAD_FACTOR);
     }
-    
+
     /** tan with degrees */
     public static double tand(double x) {
         return Math.tan(x * DEG_RAD_FACTOR);
@@ -61,12 +78,12 @@ public class FloatMathExt {
     public static double cotd(double x) {
         return tand(90 - x);
     }
-    
+
     /** sec with degrees */
     public static double secd(double x) {
         return sec(x * DEG_RAD_FACTOR);
     }
-    
+
     /** csc with degrees */
     public static double cscd(double x) {
         return csc(x * DEG_RAD_FACTOR);
@@ -77,12 +94,12 @@ public class FloatMathExt {
     public static double asind(double x) {
         return Math.asin(x) / DEG_RAD_FACTOR;
     }
-    
+
     /** acos with degrees */
     public static double acosd(double x) {
         return Math.acos(x) / DEG_RAD_FACTOR;
     }
-    
+
     /** atan with degrees */
     public static double atand(double x) {
         return Math.atan(x) / DEG_RAD_FACTOR;
@@ -92,12 +109,12 @@ public class FloatMathExt {
     public static double acotd(double x) {
         return 90 - atand(x);
     }
-    
+
     /** asec with degrees */
     public static double asecd(double x) {
         return asec(x) / DEG_RAD_FACTOR;
     }
-    
+
     /** acsc with degrees */
     public static double acscd(double x) {
         return acsc(x) / DEG_RAD_FACTOR;
@@ -111,7 +128,7 @@ public class FloatMathExt {
      * @return
      */
     public static double coth(double x) {
-    	return 1/Math.tanh(x);
+        return 1/Math.tanh(x);
     }
 
     /**
@@ -120,7 +137,7 @@ public class FloatMathExt {
      * @return
      */
     public static double sech(double x) {
-    	return 1/Math.cosh(x);
+        return 1/Math.cosh(x);
     }
 
     /**
@@ -129,13 +146,13 @@ public class FloatMathExt {
      * @return
      */
     public static double csch(double x) {
-    	return 1/Math.sinh(x);
+        return 1/Math.sinh(x);
     }
-    
+
     /**
      * calculate area sine (inverse of sinh)
      * defined for all x
-     * 
+     *
      * sinh(x) = (exp(x) - exp(-x))/2
      * let z = exp(x)
      * let s = sinh(x)
@@ -151,14 +168,17 @@ public class FloatMathExt {
      * @return asinh(s)
      */
     public static double asinh(double s) {
-    	double z = s + Math.sqrt(s*s + 1);
-    	return Math.log(z);
+        if (Double.isInfinite(s)) {
+            return s;
+        }
+        double z = s + Math.sqrt(s*s + 1);
+        return Math.log(z);
     }
-    
+
     /**
      * calculate area cosine (inverse of cosh)
      * defined for x >= 1
-     * 
+     *
      * cosh(x) = (exp(x) + exp(-x))/2
      * let z = exp(x)
      * let c = cosh(x)
@@ -170,7 +190,7 @@ public class FloatMathExt {
      * z1 = c + sqrt(c^2 - 1)
      * z2 = c - sqrt(c^2 - 1)
      * both choices are possible and by the fact that cosh is an even function, satifying cosh(-x)= cosh(x) we can conclude
-     * that z1 = 1/z2. (or by multiplying z1 and z2) 
+     * that z1 = 1/z2. (or by multiplying z1 and z2)
      * Since we prefer the positive of the two possible results, we have to pick the larger number, which is z1.
      * x = log(z1) = log(c + sqrt(c^2 - 1))
      * @param c
@@ -180,14 +200,14 @@ public class FloatMathExt {
         if (c < 1) {
             return Double.NaN;
         }
-    	double z = c + Math.sqrt(c*c - 1);
-    	return Math.log(z);
+        double z = c + Math.sqrt(c*c - 1);
+        return Math.log(z);
     }
-    
+
     /**
      * calculate area tangent (inverse of tanh)
      * defined for -1 < x < 1
-     * 
+     *
      * tanh(x) = sinh(x)/cosh(x) = (exp(x) - exp(-x))/(exp(x) + exp(-x))
      *
      * So we can already assume that -1 < tanh(x) < 1
@@ -209,14 +229,14 @@ public class FloatMathExt {
         if (t <= -1.0 || t >= 1.0) {
             return Double.NaN;
         }
-    	double z = (1+t)/(1-t);
-    	return Math.log(z) / 2;
+        double z = (1+t)/(1-t);
+        return Math.log(z) / 2;
     }
-    
+
     /**
      * calculate area cotangent (inverse of coth)
      * defined for x < -1 or x > 1
-     * 
+     *
      * coth(x) = cosh(x)/sinh(x) = (exp(x) + exp(-x))/(exp(x) - exp(-x))
      *
      * So we can already assume that coth(x) < -1 or coth(x) > 1
@@ -239,8 +259,11 @@ public class FloatMathExt {
         if (-1 <= t && t <= 1) {
             return Double.NaN;
         }
-    	double z = (t+1)/(t-1);
-    	return Math.log(z) / 2;
+        if (Double.isInfinite(t)) {
+            return 0.0;
+        }
+        double z = (t+1)/(t-1);
+        return Math.log(z) / 2;
     }
 
     /**
@@ -268,5 +291,20 @@ public class FloatMathExt {
         }
         return asinh(1/s);
     }
-        
+
+    public static double log10(double x) {
+        return Math.log(x) / LOG_10;
+    }
+
+    public static double log2(double x) {
+        return Math.log(x) / LOG_2;
+    }
+
+    public static double exp10(double x) {
+        return Math.pow(10, x);
+    }
+
+    public static double exp2(double x) {
+        return Math.pow(2, x);
+    }
 }

@@ -1,30 +1,48 @@
+// -*- coding: utf-8-unix -*- Юникод/UTF-8
+
+// (C) Karl Brodowsky 2016
+// GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 of February 1999
+
 package com.itskyconsulting.floatmath;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static com.itskyconsulting.floatmath.FloatMathExt.*;
 
 /**
- * Unit test for simple App.
+ * Unit tests for simple FloatMathExt
  */
 public class FloatMathExtTest {
 
     /** helper function: make sure that a function that would be +/- infinity mathematically is actually at least NaN, +/-Infinity or large by absolute value */
-    private void assertInfinite(String s, double d, double r)  {
+    private void assertBigOrInfinite(String s, double d, double r)  {
         if (Double.isInfinite(d)) {
             return;
         }
         if (Double.isNaN(d)) {
-            return;
+            fail(s + " d=NaN");
         }
         assertTrue(s, Math.abs(d) > r);
     }
 
-    /** helper function: make sure that a function that would be +/- infinity mathematically is actually at least NaN, +/-Infinity or large by absolute value */
+    /** helper function: make sure that a function that would be +/- infinity mathematically is actually +/-Infinity or large by absolute value */
     private void assertNaN(String s, double d) {
         assertTrue(s + " d=" + d, Double.isNaN(d));
+    }
+
+    /** helper function: make sure that a function that would be +infinity  */
+    private void assertPostiveInfinity(String s, double d) {
+        String ss = s + " d=" + d;
+        assertTrue(ss, d > 0);
+        assertTrue(s + " d=" + d, Double.isInfinite(d));
+    }
+
+    /** helper function: make sure that a function that would be +infinity  */
+    private void assertNegativeInfinity(String s, double d) {
+        String ss = s + " d=" + d;
+        assertTrue(ss, d < 0);
+        assertTrue(s + " d=" + d, Double.isInfinite(d));
     }
 
     /** helper function for testCotReg* */
@@ -87,8 +105,7 @@ public class FloatMathExtTest {
         for (int i = -l; i < l; i++) {
             double d = i * Math.PI;
             double n = cot(d);
-            System.out.println("i=" + i + " d=" + d + " n=" + n);
-            assertInfinite("d=" + d + " n=" + n, n, r);
+            assertBigOrInfinite("d=" + d + " n=" + n, n, r);
         }
     }
 
@@ -615,7 +632,7 @@ public class FloatMathExtTest {
         for (int i = -3; i <= 3; i++) {
             double x = i;
             double s = sech(x);
-			assertEquals("i=" + i + " x=" + x + " s=" + s, Math.abs(x), asech(s), 2e-14);
+            assertEquals("i=" + i + " x=" + x + " s=" + s, Math.abs(x), asech(s), 2e-14);
         }
 
     }
@@ -647,12 +664,11 @@ public class FloatMathExtTest {
     @Test
     public void testAcschOfCsch() {
         for (int i = -3; i <= 3; i++) {
-        	if (i == 0) {
-        			continue;
-        	}
+            if (i == 0) {
+                continue;
+            }
             double x = i;
             double s = csch(x);
-            System.out.println("x=" + x + " s=" + s);
             assertEquals("i=" + i + " x=" + x + " s=" + s, x, acsch(s), 2e-14);
         }
 
@@ -676,6 +692,227 @@ public class FloatMathExtTest {
     @Test
     public void testBadAcsch() {
         assertNaN("x=0", acsch(0));
+    }
+
+    /** test log2(exp2(x))=x */
+    @Test
+    public void testLog2OfExp2() {
+        for (int i = -100; i <= 100; i++) {
+            double d = i / 10.0;
+            assertEquals("i=" + i + " d=" + d, d, log2(exp2(d)), 1e-12);
+        }
+    }
+
+    /** test exp2(log2(x))=x for x > 0 */
+    @Test
+    public void testExp2OfLog2() {
+        for (int i =  1; i <= 100; i++) {
+            double d = i / 10.0;
+            assertEquals("i=" + i + " d=" + d, d, exp2(log2(d)), 1e-12);
+        }
+    }
+
+    /** test log10(exp10(x))=x */
+    @Test
+    public void testLog10OfExp10() {
+        for (int i = -100; i <= 100; i++) {
+            double d = i / 10.0;
+            assertEquals("i=" + i + " d=" + d, d, log10(exp10(d)), 1e-12);
+        }
+    }
+
+    /** test exp10(log10(x))=x for x > 0 */
+    @Test
+    public void testExp10OfLog10() {
+        for (int i =  1; i <= 100; i++) {
+            double d = i / 10.0;
+            assertEquals("i=" + i + " d=" + d, d, exp10(log10(d)), 1e-12);
+        }
+    }
+
+    /** make sure that all functions return NaN when called with NaN */
+    @Test
+    public void testNaN() {
+        assertNaN("cot(NaN)", cot(Double.NaN));
+        assertNaN("sec(NaN)", sec(Double.NaN));
+        assertNaN("csc(NaN)", csc(Double.NaN));
+        assertNaN("acot(NaN)", acot(Double.NaN));
+        assertNaN("asec(NaN)", asec(Double.NaN));
+        assertNaN("acsc(NaN)", acsc(Double.NaN));
+        assertNaN("sind(NaN)", sind(Double.NaN));
+        assertNaN("cosd(NaN)", cosd(Double.NaN));
+        assertNaN("tand(NaN)", tand(Double.NaN));
+        assertNaN("cotd(NaN)", cotd(Double.NaN));
+        assertNaN("secd(NaN)", secd(Double.NaN));
+        assertNaN("cscd(NaN)", cscd(Double.NaN));
+        assertNaN("asind(NaN)", asind(Double.NaN));
+        assertNaN("acosd(NaN)", acosd(Double.NaN));
+        assertNaN("atand(NaN)", atand(Double.NaN));
+        assertNaN("acotd(NaN)", acotd(Double.NaN));
+        assertNaN("asecd(NaN)", asecd(Double.NaN));
+        assertNaN("acscd(NaN)", acscd(Double.NaN));
+        assertNaN("coth(NaN)", coth(Double.NaN));
+        assertNaN("sech(NaN)", sech(Double.NaN));
+        assertNaN("csch(NaN)", csch(Double.NaN));
+        assertNaN("asinh(NaN)", asinh(Double.NaN));
+        assertNaN("acosh(NaN)", acosh(Double.NaN));
+        assertNaN("atanh(NaN)", atanh(Double.NaN));
+        assertNaN("acoth(NaN)", acoth(Double.NaN));
+        assertNaN("asech(NaN)", asech(Double.NaN));
+        assertNaN("acsch(NaN)", acsch(Double.NaN));
+        assertNaN("log10(NaN)", log10(Double.NaN));
+        assertNaN("log2(NaN)", log2(Double.NaN));
+        assertNaN("exp10(NaN)", exp10(Double.NaN));
+        assertNaN("exp2(NaN)", exp2(Double.NaN));
+    }
+
+    /** make sure that all functions return the correct value when called with +Infinity */
+    @Test
+    public void testPosInfinity() {
+        // periodic functions return NaN when called with Infinty
+        // Math-lib functions to check uniformity of this library with standard library
+        assertNaN("sin(Infinity)", Math.sin(Double.POSITIVE_INFINITY));
+        assertNaN("cos(Infinity)", Math.cos(Double.POSITIVE_INFINITY));
+        assertNaN("tan(Infinity)", Math.tan(Double.POSITIVE_INFINITY));
+
+        assertNaN("cot(Infinity)", cot(Double.POSITIVE_INFINITY));
+        assertNaN("sec(Infinity)", sec(Double.POSITIVE_INFINITY));
+        assertNaN("csc(Infinity)", csc(Double.POSITIVE_INFINITY));
+
+        // Math-lib functions to check uniformity of this library with standard library
+        // sin and cos have values only between -1 and 1, so asin and acos cannot work for Infinity
+        assertNaN("asin(Infinity)", Math.asin(Double.POSITIVE_INFINITY));
+        assertNaN("acos(Infinity)", Math.acos(Double.POSITIVE_INFINITY));
+
+        // tan(x) -> infinity for x-> pi/2 from below:
+        assertEquals("atan(Infinity)", FloatMathExt.HALF_PI, Math.atan(Double.POSITIVE_INFINITY), 1e-100);
+
+        assertEquals("acot(Infinity)", Math.atan(0), acot(Double.POSITIVE_INFINITY), 1e-100);
+        assertEquals("asec(Infinity)", Math.acos(0), asec(Double.POSITIVE_INFINITY), 1e-100);
+        assertEquals("acsc(Infinity)", Math.asin(0), acsc(Double.POSITIVE_INFINITY), 1e-100);
+
+        // periodic functions return NaN when called with Infinty
+        assertNaN("sind(Infinity)", sind(Double.POSITIVE_INFINITY));
+        assertNaN("cosd(Infinity)", cosd(Double.POSITIVE_INFINITY));
+        assertNaN("tand(Infinity)", tand(Double.POSITIVE_INFINITY));
+        assertNaN("cotd(Infinity)", cotd(Double.POSITIVE_INFINITY));
+        assertNaN("secd(Infinity)", secd(Double.POSITIVE_INFINITY));
+        assertNaN("cscd(Infinity)", cscd(Double.POSITIVE_INFINITY));
+
+        // sin and cos have values only between -1 and 1, so asin and acos cannot work for Infinity
+        assertNaN("asind(Infinity)", asind(Double.POSITIVE_INFINITY));
+        assertNaN("acosd(Infinity)", acosd(Double.POSITIVE_INFINITY));
+
+        // see atan
+        assertEquals("atand(Infinity)", 90, atand(Double.POSITIVE_INFINITY), 1e-100);
+        // cot(x) -> Infinity for x-> 0 from above
+        assertEquals("acotd(Infinity)", 0, acotd(Double.POSITIVE_INFINITY), 1e-100);
+        assertEquals("asecd(Infinity)", acosd(0), asecd(Double.POSITIVE_INFINITY), 1e-100);
+        assertEquals("acscd(Infinity)", asind(0), acscd(Double.POSITIVE_INFINITY), 1e-100);
+
+        // Math-lib functions to check uniformity of this library with standard library
+        assertPostiveInfinity("sinh(Infinity)", Math.sinh(Double.POSITIVE_INFINITY));
+        assertPostiveInfinity("cosh(Infinity)", Math.cosh(Double.POSITIVE_INFINITY));
+        assertEquals("tanh(Infinity)", 1, Math.tanh(Double.POSITIVE_INFINITY), 1e-100);
+
+        // see sinh, cosh, tanh
+        assertEquals("coth(Infinity)", 1, coth(Double.POSITIVE_INFINITY), 1e-100);
+        assertEquals("sech(Infinity)", 0, sech(Double.POSITIVE_INFINITY), 1e-100);
+        assertEquals("csch(Infinity)", 0, csch(Double.POSITIVE_INFINITY), 1e-100);
+
+        // see sinh and cosh
+        assertPostiveInfinity("asinh(Infinity)", asinh(Double.POSITIVE_INFINITY));
+        assertPostiveInfinity("acosh(Infinity)", acosh(Double.POSITIVE_INFINITY));
+
+        // tanh has values in range from -1 to 1, so Infinity does not occur.
+        assertNaN("atanh(Infinity)", atanh(Double.POSITIVE_INFINITY));
+        // coth(x) -> Infinity for x -> 0 from above
+        assertEquals("acoth(Infinity)", 0, acoth(Double.POSITIVE_INFINITY), 1e-100);
+        // sech has values in range from 0 to 1, so Infinity does not occur.
+        assertNaN("asech(Infinity)", asech(Double.POSITIVE_INFINITY));
+        // csch(x) -> Infinity for x->0 from above
+        assertEquals("acsch(Infinity)", 0, acsch(Double.POSITIVE_INFINITY), 1e-100);
+
+        // all three have f(x)-> Infinity for x-> Infinity
+        assertPostiveInfinity("log10(Infinity)", log10(Double.POSITIVE_INFINITY));
+        assertPostiveInfinity("log2(Infinity)", log2(Double.POSITIVE_INFINITY));
+        assertPostiveInfinity("exp10(Infinity)", exp10(Double.POSITIVE_INFINITY));
+        assertPostiveInfinity("exp2(Infinity)", exp2(Double.POSITIVE_INFINITY));
+    }
+
+    /** make sure that all functions return the correct value when called with +Infinity */
+    @Test
+    public void testNegInfinity() {
+        // periodic functions return NaN when called with Infinty
+        // include Math-functions to make sure that the new functions conform with them
+        assertNaN("sin(-Infinity)", Math.sin(Double.NEGATIVE_INFINITY));
+        assertNaN("cos(-Infinity)", Math.cos(Double.NEGATIVE_INFINITY));
+        assertNaN("tan(-Infinity)", Math.tan(Double.NEGATIVE_INFINITY));
+
+        assertNaN("cot(-Infinity)", cot(Double.NEGATIVE_INFINITY));
+        assertNaN("sec(-Infinity)", sec(Double.NEGATIVE_INFINITY));
+        assertNaN("csc(-Infinity)", csc(Double.NEGATIVE_INFINITY));
+
+        // Math-lib functions to check uniformity of this library with standard library
+        // sin and cos have values only between -1 and 1, so asin and acos cannot work for Infinity
+        assertNaN("asin(-Infinity)", Math.asin(Double.NEGATIVE_INFINITY));
+        assertNaN("acos(-Infinity)", Math.acos(Double.NEGATIVE_INFINITY));
+        // tan(x) -> -infinity for x-> -pi/2 from above
+        assertEquals("atan(-Infinity)", -FloatMathExt.HALF_PI, Math.atan(Double.NEGATIVE_INFINITY), 1e-100);
+
+        // cot(x) -> -infinity for x-> -pi from below
+        assertEquals("acot(-Infinity)", Math.PI, acot(Double.NEGATIVE_INFINITY), 1e-100);
+        // see cos and sin
+        assertEquals("asec(-Infinity)", Math.acos(0), asec(Double.NEGATIVE_INFINITY), 1e-100);
+        assertEquals("acsc(-Infinity)", Math.asin(0), acsc(Double.NEGATIVE_INFINITY), 1e-100);
+
+        // periodic functions return NaN when called with -Infinty
+        assertNaN("sind(-Infinity)", sind(Double.NEGATIVE_INFINITY));
+        assertNaN("cosd(-Infinity)", cosd(Double.NEGATIVE_INFINITY));
+        assertNaN("tand(-Infinity)", tand(Double.NEGATIVE_INFINITY));
+        assertNaN("cotd(-Infinity)", cotd(Double.NEGATIVE_INFINITY));
+        assertNaN("secd(-Infinity)", secd(Double.NEGATIVE_INFINITY));
+        assertNaN("cscd(-Infinity)", cscd(Double.NEGATIVE_INFINITY));
+
+        // sin and cos have values only between -1 and 1, so asin and acos cannot work for Infinity
+        assertNaN("asind(-Infinity)", asind(Double.NEGATIVE_INFINITY));
+        assertNaN("acosd(-Infinity)", acosd(Double.NEGATIVE_INFINITY));
+
+        // see atan, acot, asec, acsc
+        assertEquals("atand(-Infinity)", -90, atand(Double.NEGATIVE_INFINITY), 1e-100);
+        assertEquals("acotd(-Infinity)", 180, acotd(Double.NEGATIVE_INFINITY), 1e-100);
+        assertEquals("asecd(-Infinity)", acosd(0), asecd(Double.NEGATIVE_INFINITY), 1e-100);
+        assertEquals("acscd(-Infinity)", asind(0), acscd(Double.NEGATIVE_INFINITY), 1e-100);
+
+        // Math-lib functions to check uniformity of this library with standard library
+        assertNegativeInfinity("sinh(-Infinity)", Math.sinh(Double.NEGATIVE_INFINITY));
+        assertPostiveInfinity("cosh(-Infinity)", Math.cosh(Double.NEGATIVE_INFINITY));
+        assertEquals("tanh(-Infinity)", -1, Math.tanh(Double.NEGATIVE_INFINITY), 1e-100);
+
+        // see sinh, cosh, tanh
+        assertEquals("coth(-Infinity)", -1, coth(Double.NEGATIVE_INFINITY), 1e-100);
+        assertEquals("sech(-Infinity)", 0, sech(Double.NEGATIVE_INFINITY), 1e-100);
+        assertEquals("csch(-Infinity)", 0, csch(Double.NEGATIVE_INFINITY), 1e-100);
+
+        // see sinh
+        assertNegativeInfinity("asinh(-Infinity)", asinh(Double.NEGATIVE_INFINITY));
+        // negative values do not occur for cosh
+        assertNaN("acosh(-Infinity)", acosh(Double.NEGATIVE_INFINITY));
+        // tanh has values in range from -1 to 1, so Infinity does not occur.
+        assertNaN("atanh(-Infinity)", atanh(Double.NEGATIVE_INFINITY));
+        // coth(x) -> -Infinity for x -> 0 from below
+        assertEquals("acoth(-Infinity)", 0, acoth(Double.NEGATIVE_INFINITY), 1e-100);
+        // sech has values in range from 0 to 1, so -Infinity does not occur.
+        assertNaN("asech(-Infinity)", asech(Double.NEGATIVE_INFINITY));
+        // csch(x) -> -Infinity for x->0 from below
+        assertEquals("acsch(-Infinity)", 0, acsch(Double.NEGATIVE_INFINITY), 1e-100);
+
+        // logarithms are not defined for negative arguments
+        assertNaN("log10(-Infinity)", log10(Double.NEGATIVE_INFINITY));
+        assertNaN("log2(-Infinity)", log2(Double.NEGATIVE_INFINITY));
+        // exponential function exp(x)-> 0 for x -> -Infinity. same for exp2 and exp10
+        assertEquals("exp10(-Infinity)", 0, exp10(Double.NEGATIVE_INFINITY), 1e-100);
+        assertEquals("exp2(-Infinity)", 0, exp2(Double.NEGATIVE_INFINITY), 1e-100);
     }
 
 }
