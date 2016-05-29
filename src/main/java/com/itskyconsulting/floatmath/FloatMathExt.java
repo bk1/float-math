@@ -16,40 +16,27 @@ public class FloatMathExt {
         return Math.tan(HALF_PI - x);
     }
     
-    /** @deprecated, use Math.sec */
+    /** sec(x) = 1/cos(x) */
     public static double sec(double x) {
         return 1/Math.cos(x);
     }
     
-    /** @deprecated, use Math.csc */
+    /** csc(x) = 1/sin(x) */
     public static double csc(double x) {
         return 1/Math.sin(x);
     }
-
-    /** @deprecated, use Math.asin */
-    public static double asin(double x) {
-        return Math.asin(x);
-    }
     
-    /** @deprecated, use Math.acos */
-    public static double acos(double x) {
-        return Math.acos(x);
-    }
-    
-    /** @deprecated, use Math.atan */
-    public static double atan(double x) {
-        return Math.atan(x);
-    }
-    
+    /** inverse of cot */
     public static double acot(double x) {
         return HALF_PI - Math.atan(x);
     }
     
+    /** inverse of sec */
     public static double asec(double x) {
         return Math.acos(1/x);
     }
     
-    /** @deprecated, use Math.csc */
+    /** inverse of csc */
     public static double acsc(double x) {
         return Math.asin(1/x);
     }
@@ -114,21 +101,6 @@ public class FloatMathExt {
     /** acsc with degrees */
     public static double acscd(double x) {
         return acsc(x) / DEG_RAD_FACTOR;
-    }
-    
-    @Deprecated
-    public static double sinh(double x) {
-    	return Math.sinh(x);
-    }
-
-    @Deprecated
-    public static double cosh(double x) {
-    	return Math.cosh(x);
-    }
-
-    @Deprecated
-    public static double tanh(double x) {
-    	return Math.tanh(x);
     }
 
     /**
