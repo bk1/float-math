@@ -30,7 +30,12 @@ public class FloatMathExt {
 
     /** cot(x) = cos(x)/sin(x). This is often calculated using 1/tan(x), but that does not work for all x. This implementation works for all x for which cot should be defined. */
     public static double cot(double x) {
-        return Math.tan(HALF_PI - x);
+    	// cases are just to retain precision. Using -HALF_PI or HALF_PI is the same with perfect precision, because tan and cot are PI-periodic
+    	if (x < 0) {
+            return Math.tan(-HALF_PI - x);
+    	} else {
+            return Math.tan(HALF_PI - x);
+    	}
     }
 
     /** sec(x) = 1/cos(x) */
@@ -76,7 +81,11 @@ public class FloatMathExt {
 
     /** cot with degrees */
     public static double cotd(double x) {
-        return tand(90 - x);
+    	if (x < 0) {
+    		return tand(-90 - x);
+    	} else {
+    		return tand(90 - x);
+    	}
     }
 
     /** sec with degrees */
@@ -171,8 +180,17 @@ public class FloatMathExt {
         if (Double.isInfinite(s)) {
             return s;
         }
-        double z = s + Math.sqrt(s*s + 1);
-        return Math.log(z);
+        // this improves precision
+        if (s < 0) {
+        	return -asinhInternal(-s);
+        } else {
+        	return asinhInternal(s);
+        }
+    }
+        
+    private static double asinhInternal(double s) {
+    	double z = s + Math.sqrt(s*s + 1);
+    	return Math.log(z);
     }
 
     /**
@@ -229,6 +247,14 @@ public class FloatMathExt {
         if (t <= -1.0 || t >= 1.0) {
             return Double.NaN;
         }
+        if (t < 0) {
+        	return atanhIternal(t);
+        } else {
+        	return -atanhIternal(-t);
+        }
+    }
+    
+    private static double atanhIternal(double t) {
         double z = (1+t)/(1-t);
         return Math.log(z) / 2;
     }
@@ -262,9 +288,17 @@ public class FloatMathExt {
         if (Double.isInfinite(t)) {
             return 0.0;
         }
-        double z = (t+1)/(t-1);
-        return Math.log(z) / 2;
+        if (t < 0) {
+        	return -acothInternal(-t);
+        } else {
+        	return acothInternal(t);
+        }
     }
+
+	private static double acothInternal(double t) {
+		double z = (t+1)/(t-1);
+        return Math.log(z) / 2;
+	}
 
     /**
      *  calculate the area secant (inverse of sech)
