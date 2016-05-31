@@ -15,7 +15,7 @@ import static com.itskyconsulting.floatmath.FloatMathExt.*;
  */
 public class FloatMathExtTest {
 
-    /** helper function: make sure that a function that would be +/- infinity mathematically is actually at least NaN, +/-Infinity or large by absolute value */
+    /** helper function: make sure that a function that would be +/- infinity mathematically is actually +/-Infinity or large by absolute value */
     private void assertBigOrInfinite(String s, double d, double r)  {
         if (Double.isInfinite(d)) {
             return;
@@ -59,9 +59,7 @@ public class FloatMathExtTest {
      */
     @Test
     public void testCotReg1() {
-        int l = 500;
-        double delta = 1e-10;
-        checkCotReg(l, delta);
+        checkCotReg(500, 1e-10);
     }
 
     /**
@@ -69,9 +67,7 @@ public class FloatMathExtTest {
      */
     @Test
     public void testCotReg2() {
-        int l = 50;
-        double delta = 1e-12;
-        checkCotReg(l, delta);
+        checkCotReg(50, 1e-12);
     }
 
     /**
@@ -79,9 +75,7 @@ public class FloatMathExtTest {
      */
     @Test
     public void testCotReg3() {
-        int l = 5;
-        double delta = 1e-13;
-        checkCotReg(l, delta);
+        checkCotReg(5, 1e-13);
     }
 
     /**
@@ -114,9 +108,7 @@ public class FloatMathExtTest {
      */
     @Test
     public void testCotBad1() {
-        int l = 500;
-        double r = 1e10;
-        checkCotBad(l, r);
+        checkCotBad(500, 1e10);
     }
 
     /**
@@ -124,9 +116,7 @@ public class FloatMathExtTest {
      */
     @Test
     public void testCotBad2() {
-        int l = 50;
-        double r = 1e13;
-        checkCotBad(l, r);
+        checkCotBad(50, 1e13);
     }
 
     /**
@@ -134,13 +124,11 @@ public class FloatMathExtTest {
      */
     @Test
     public void testCotBad3() {
-        int l = 5;
-        double r = 1e14;
-        checkCotBad(l, r);
+        checkCotBad(5, 1e14);
     }
 
     /**
-     * test that tan(-x)=-tan(x)
+     * test that cot(-x)=-cot(x)
      */
     @Test
     public void testCotOdd() {
@@ -716,27 +704,9 @@ public class FloatMathExtTest {
     /** test sinh(asinh(x)) = x */
     @Test
     public void testSinhOfAsinh() {
-        for (int i = -3; i <= 3; i++) {
-            double x = i;
+        for (int i = -100; i <= 100; i++) {
+            double x = i/10.0;
             assertEquals("i=" + i + " x=" + x, x, Math.sinh(asinh(x)), 1e-14);
-        }
-    }
-
-    /** test sinh(asinh(x)) = x */
-    @Test
-    public void testSinhOfAsinhPos() {
-        for (int i = 0; i <= 100; i++) {
-            double x = i/10.0;
-            assertEquals("i=" + i + " x=" + x, x, Math.sinh(asinh(x)), 6e-15);
-        }
-    }
-
-    /** test sinh(asinh(x)) = x */
-    @Test
-    public void testSinhOfAsinhNeg() {
-        for (int i = -100; i <= 0; i++) {
-            double x = i/10.0;
-            assertEquals("i=" + i + " x=" + x, x, Math.sinh(asinh(x)), 6e-15);
         }
     }
 
@@ -791,32 +761,10 @@ public class FloatMathExtTest {
     /** test tanh(atanh(x))=x for -1 < x < 1 */
     @Test
     public void testTanhOfAtanh() {
-        for (int i = -9; i <= 9; i++) {
-            double x = i / 10.0;
-            double a = atanh(x);
-            assertEquals("i=" + i + " x=" + x + " a=" + a, x, Math.tanh(a), 1e-14);
-        }
-
-    }
-
-    /** test tanh(atanh(x))=x for -1 < x < 1 */
-    @Test
-    public void testTanhOfAtanhPos() {
-        for (int i = 999; i >= 0; i--) {
+        for (int i = -999; i <= 999; i++) {
             double x = i / 1000.0;
             double a = atanh(x);
-            assertEquals("i=" + i + " x=" + x + " a=" + a + " r=" + Math.abs(x-Math.tanh(a)), x, Math.tanh(a), 1.67e-16);
-        }
-
-    }
-
-    /** test tanh(atanh(x))=x for -1 < x < 1 */
-    @Test
-    public void testTanhOfAtanhNeg() {
-        for (int i = -999; i <= 0; i++) {
-            double x = i / 1000.0;
-            double a = atanh(x);
-            assertEquals("i=" + i + " x=" + x + " a=" + a + " r=" + Math.abs(x-Math.tanh(a)), x, Math.tanh(a), 1.67e-16);
+            assertEquals("i=" + i + " x=" + x + " a=" + a, x, Math.tanh(a), 1.7e-16);
         }
     }
 
@@ -865,26 +813,6 @@ public class FloatMathExtTest {
             double x = i / 10.0;
             double a = acoth(x);
             assertEquals("i=" + i + " x=" + x + " a=" + a, x, coth(a), 2e-14);
-        }
-    }
-
-    /** test coth(acoth(x)) = x for x < -1 or x > 1 */
-    @Test
-    public void testCothOfAcothPos() {
-        for (int i = 11; i <= 100; i++) {
-            double x = i / 10.0;
-            double a = acoth(x);
-            assertEquals("i=" + i + " x=" + x + " a=" + a, x, coth(a), 1e-14);
-        }
-    }
-
-    /** test coth(acoth(x)) = x for x < -1 or x > 1 */
-    @Test
-    public void testCothOfAcothNeg() {
-        for (int i = -11; i >= -100; i--) {
-            double x = i / 10.0;
-            double a = acoth(x);
-            assertEquals("i=" + i + " x=" + x + " a=" + a, x, coth(a), 1e-14);
         }
     }
 
