@@ -1,5 +1,5 @@
 // -*- coding: utf-8-unix -*- Юникод/UTF-8
-// (C) Karl Brodowsky 2016
+// (C) Karl Brodowsky / IT Sky Consulting GmbH 2016
 // GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 of February 1999
 
 package com.itskyconsulting.floatmath;
