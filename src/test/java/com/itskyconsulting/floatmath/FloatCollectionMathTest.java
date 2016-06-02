@@ -319,9 +319,9 @@ public class FloatCollectionMathTest {
     public void testHarmonicMeanOfTwoPos() {
         for (int i = 1; i < 100; i++) {
             for (int j = 1; j < 100; j++) {
-            	double factor = 1;
-            	checkHarmonicMeanOfTwo(i, j, factor);
-            	checkHarmonicMeanOfTwo(-i, -j, factor);
+                double factor = 1;
+                checkHarmonicMeanOfTwo(i, j, factor);
+                checkHarmonicMeanOfTwo(-i, -j, factor);
             }
         }
     }
@@ -329,26 +329,26 @@ public class FloatCollectionMathTest {
     @Test
     public void testHarmonicMeanOfTwo() {
         for (int i = -100; i < 100; i++) {
-        	if (i == 0) {
-        		continue;
-        	}
+            if (i == 0) {
+                continue;
+            }
             for (int j = - 100; j < 100; j++) {
-            	if (j == 0) {
-            			continue;
-            	}
-            	if (i > 0 && j > 0) {
-            		continue;
-            	}
-            	if (i < 0 && j < 0) {
-            		continue;
-            	}
-            	double factor = 128;
-            	checkHarmonicMeanOfTwo(i, j, factor);
+                if (j == 0) {
+                    continue;
+                }
+                if (i > 0 && j > 0) {
+                    continue;
+                }
+                if (i < 0 && j < 0) {
+                    continue;
+                }
+                double factor = 128;
+                checkHarmonicMeanOfTwo(i, j, factor);
             }
         }
     }
-    
-    
+
+
     private void checkHarmonicMeanOfTwo(int i, int j, double factor) {
         double x = 1.0/(2*i);
         double y = 1.0/(2*j);
@@ -358,7 +358,7 @@ public class FloatCollectionMathTest {
         double v = Math.abs(h-z) / Math.ulp(z);
         String str = "i=" + i + " j=" + j + " x=" + x + " y=" + y + " z=" + z + " u=" + u + " [" + (z-u) + ", " + (z+u) + "] v=" + v;
         if (v > 1) {
-        	System.out.println(str);
+            System.out.println(str);
         }
         assertEquals(str, z, h, u);
     }
