@@ -4,6 +4,9 @@
 
 package com.itskyconsulting.floatmath;
 
+import static java.lang.Math.toDegrees;
+import static java.lang.Math.toRadians;
+
 /**
  * Floating point functions that we would expect in the standard library
  *
@@ -18,9 +21,6 @@ public class FloatMathExt {
 
     /** pi/2.  This is used so often that it should not be recalculated each time */
     public static final double HALF_PI = Math.PI/2;
-
-    /** factor to transform degrees to radiens and vice versa */
-    public static final double DEG_RAD_FACTOR = Math.PI / 180;
 
     /** log(10) */
     public static final double LOG_10 = Math.log(10);
@@ -66,17 +66,17 @@ public class FloatMathExt {
 
     /** sin with degrees */
     public static double sind(double x) {
-        return Math.sin(x * DEG_RAD_FACTOR);
+        return Math.sin(toRadians(x));
     }
 
     /** cos with degrees */
     public static double cosd(double x) {
-        return Math.cos(x * DEG_RAD_FACTOR);
+        return Math.cos(toRadians(x));
     }
 
     /** tan with degrees */
     public static double tand(double x) {
-        return Math.tan(x * DEG_RAD_FACTOR);
+        return Math.tan(toRadians(x));
     }
 
     /** cot with degrees */
@@ -90,28 +90,28 @@ public class FloatMathExt {
 
     /** sec with degrees */
     public static double secd(double x) {
-        return sec(x * DEG_RAD_FACTOR);
+        return sec(toRadians(x));
     }
 
     /** csc with degrees */
     public static double cscd(double x) {
-        return csc(x * DEG_RAD_FACTOR);
+        return csc(toRadians(x));
     }
 
 
     /** asin with degrees */
     public static double asind(double x) {
-        return Math.asin(x) / DEG_RAD_FACTOR;
+        return Math.toDegrees(Math.asin(x));
     }
 
     /** acos with degrees */
     public static double acosd(double x) {
-        return Math.acos(x) / DEG_RAD_FACTOR;
+        return toDegrees(Math.acos(x));
     }
 
     /** atan with degrees */
     public static double atand(double x) {
-        return Math.atan(x) / DEG_RAD_FACTOR;
+        return toDegrees(Math.atan(x));
     }
 
     /** acot with degrees */
@@ -121,12 +121,12 @@ public class FloatMathExt {
 
     /** asec with degrees */
     public static double asecd(double x) {
-        return asec(x) / DEG_RAD_FACTOR;
+        return toDegrees(asec(x));
     }
 
     /** acsc with degrees */
     public static double acscd(double x) {
-        return acsc(x) / DEG_RAD_FACTOR;
+        return toDegrees(acsc(x));
     }
 
     /**
@@ -326,11 +326,6 @@ public class FloatMathExt {
         return asinh(1/s);
     }
 
-    /** log_10(x)=lg(x) */
-    public static double log10(double x) {
-        return Math.log(x) / LOG_10;
-    }
-
     /** log_2=ld(x) */
     public static double log2(double x) {
         return Math.log(x) / LOG_2;
@@ -345,7 +340,7 @@ public class FloatMathExt {
     public static double exp2(double x) {
         return Math.pow(2, x);
     }
-
+            
     /** x**2 */
     public static double square(double x) {
         return x*x;

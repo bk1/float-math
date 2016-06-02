@@ -151,4 +151,118 @@ public class FloatCollectionMath {
             return result;
         }
     }
+
+    public static double sum(double ... arr) {
+        double sum = 0.0;
+        double correction = 0.0;
+        for (double x : arr) {
+            if (Double.isInfinite(x)) {
+                if (x == -sum) {
+                    return Double.NaN;
+                } else {
+                    sum = x;
+                    continue;
+                }
+            }
+
+            double y = x - correction;
+            double t = sum + y;
+            correction = (t - sum) - y;
+            sum = t;
+        }
+        return sum;
+    }
+
+
+    /** average (arithmetic mean) */
+    public static double arithmeticMean(double ... arr) {
+        int n = arr.length;
+        if (n == 0) {
+            return Double.NaN;
+        } else {
+            return sum(arr)/n;
+        }
+    }
+
+    public static double prod(double ... arr) {
+        double prod = 1.0;
+        for (double x : arr) {
+            prod *= x;
+        }
+        return prod;
+    }
+
+    /** geometric mean */
+    public static double geometricMean(double ... arr) {
+        int n = arr.length;
+        if (n == 0) {
+            return Double.NaN;
+        } else if (n == 1) {
+            return arr[0];
+        } else {
+            double prod = prod(arr);
+            if (n == 2) {
+                return Math.sqrt(prod);
+            } else if (n == 3) {
+                return Math.cbrt(prod);
+            } else {
+                return Math.pow(prod, 1.0/n);
+            }
+        }
+    }
+
+    /** harmonic mean */
+    public static double harmonicMean(double ... arr) {
+        int n = arr.length;
+        if (n == 0) {
+            return Double.NaN;
+        } else if (n == 1) {
+            return arr[0];
+        } else {
+            double[] recarr = new double[n];
+            for (int i = 0; i < n; i++) {
+                recarr[i] = 1/arr[i];
+            }
+            double recmean = arithmeticMean(recarr);
+            return 1/recmean;
+        }
+    }
+
+    /** quadratic mean */
+    public static double quadraticMean(double ... arr) {
+        int n = arr.length;
+        if (n == 0) {
+            return Double.NaN;
+        } else if (n == 1) {
+            return arr[0];
+        } else {
+            double[] sqrarr = new double[n];
+            for (int i = 0; i < n; i++) {
+                sqrarr[i] = FloatMathExt.square(arr[i]);
+            }
+            double sqrmean = arithmeticMean(sqrarr);
+            return Math.sqrt(sqrmean);
+        }
+    }
+
+    /** cubic mean */
+    public static double cubicMean(double ... arr) {
+        int n = arr.length;
+        if (n == 0) {
+            return Double.NaN;
+        } else if (n == 1) {
+            return arr[0];
+        } else {
+            double[] cubarr = new double[n];
+            for (int i = 0; i < n; i++) {
+                cubarr[i] = FloatMathExt.cube(arr[i]);
+            }
+            double cubmean = arithmeticMean(cubarr);
+            return Math.cbrt(cubmean);
+        }
+    }
+
+    
+        
+        
 }

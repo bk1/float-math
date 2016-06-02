@@ -930,21 +930,21 @@ public class FloatMathExtTest {
         }
     }
 
-    /** test log10(exp10(x))=x */
+    /** test Math.log10(exp10(x))=x */
     @Test
     public void testLog10OfExp10() {
         for (int i = -100; i <= 100; i++) {
             double d = i / 10.0;
-            assertEquals("i=" + i + " d=" + d, d, log10(exp10(d)), 1e-12);
+            assertEquals("i=" + i + " d=" + d, d, Math.log10(exp10(d)), 1e-12);
         }
     }
 
-    /** test exp10(log10(x))=x for x > 0 */
+    /** test exp10(Math.log10(x))=x for x > 0 */
     @Test
     public void testExp10OfLog10() {
         for (int i =  1; i <= 100; i++) {
             double d = i / 10.0;
-            assertEquals("i=" + i + " d=" + d, d, exp10(log10(d)), 1e-12);
+            assertEquals("i=" + i + " d=" + d, d, exp10(Math.log10(d)), 1e-12);
         }
     }
 
@@ -978,7 +978,7 @@ public class FloatMathExtTest {
         assertNaN("acoth(NaN)", acoth(Double.NaN));
         assertNaN("asech(NaN)", asech(Double.NaN));
         assertNaN("acsch(NaN)", acsch(Double.NaN));
-        assertNaN("log10(NaN)", log10(Double.NaN));
+        assertNaN("Math.log10(NaN)", Math.log10(Double.NaN));
         assertNaN("log2(NaN)", log2(Double.NaN));
         assertNaN("exp10(NaN)", exp10(Double.NaN));
         assertNaN("exp2(NaN)", exp2(Double.NaN));
@@ -1052,7 +1052,7 @@ public class FloatMathExtTest {
         assertEquals("acsch(Infinity)", 0, acsch(Double.POSITIVE_INFINITY), 1e-100);
 
         // all three have f(x)-> Infinity for x-> Infinity
-        assertPostiveInfinity("log10(Infinity)", log10(Double.POSITIVE_INFINITY));
+        assertPostiveInfinity("Math.log10(Infinity)", Math.log10(Double.POSITIVE_INFINITY));
         assertPostiveInfinity("log2(Infinity)", log2(Double.POSITIVE_INFINITY));
         assertPostiveInfinity("exp10(Infinity)", exp10(Double.POSITIVE_INFINITY));
         assertPostiveInfinity("exp2(Infinity)", exp2(Double.POSITIVE_INFINITY));
@@ -1126,11 +1126,92 @@ public class FloatMathExtTest {
         assertEquals("acsch(-Infinity)", 0, acsch(Double.NEGATIVE_INFINITY), 1e-100);
 
         // logarithms are not defined for negative arguments
-        assertNaN("log10(-Infinity)", log10(Double.NEGATIVE_INFINITY));
+        assertNaN("Math.log10(-Infinity)", Math.log10(Double.NEGATIVE_INFINITY));
         assertNaN("log2(-Infinity)", log2(Double.NEGATIVE_INFINITY));
         // exponential function exp(x)-> 0 for x -> -Infinity. same for exp2 and exp10
         assertEquals("exp10(-Infinity)", 0, exp10(Double.NEGATIVE_INFINITY), 1e-100);
         assertEquals("exp2(-Infinity)", 0, exp2(Double.NEGATIVE_INFINITY), 1e-100);
+    }
+    
+    private static final double ULP_FACTOR = 9;
+    
+    @Test
+    public void testMathPowerWithIntExpCompare() {
+    	for (int i = -1000; i <= 1000; i++) {
+            double d = i;
+            for (int j = 0; j < 100; j++) {
+                double found = Math.pow(d, j);
+                double expected = pow(d, j);
+                double diff = Math.abs(found - expected);
+                double rdiff = diff / Math.ulp(expected);
+                
+                //double delta = (Math.abs(expected) + Double.MIN_NORMAL)*1e-15;
+                double delta = ULP_FACTOR*(Math.ulp(found) + Math.ulp(expected));
+                assertEquals("i=" + i + " j=" + j + " diff=" + diff + " rdiff=" + rdiff + " delta=" + delta, expected, found, delta);
+            }
+    	}
+    }
+    
+    @Test
+    public void testMathPowerWithIntExp() {
+    	for (int i = -1000; i <= 1000; i++) {
+            double d = i;
+            double expected = 1;
+            for (int j = 0; j < 100; j++) {
+                double found = Math.pow(d, j);
+                double diff = Math.abs(expected - found);
+                double rdiff = diff / Math.ulp(expected);
+                double delta = ULP_FACTOR*(Math.ulp(found) + Math.ulp(expected));
+                assertEquals("i=" + i + " j=" + j + " diff=" + diff + " rdiff=" + rdiff, expected, found, delta);
+                expected*= d;
+            }
+    	}
+    }
+
+    @Test
+    public void testPowerWithIntExp() {
+    	for (int i = -1000; i <= 1000; i++) {
+            double d = i;
+            double expected = 1;
+            for (int j = 0; j < 100; j++) {
+                double found = pow(d, j);
+                double diff = Math.abs(expected - found);
+                double rdiff = diff / Math.ulp(expected);
+                double delta = ULP_FACTOR*(Math.ulp(found) + Math.ulp(expected));
+                assertEquals("i=" + i + " j=" + j + " diff=" + diff + " rdiff=" + rdiff, expected, found, delta);
+                expected*= d;
+            }
+    	}
+    }
+
+    /** x**y with integral y to compare with Math.pow */
+    private static double pow(double x, long y) {
+        if (y == 0) {
+            return 1.0;
+        } else if (y == 1) {
+            return x;
+        } else if (y == -1) {
+            return 1/x;
+        }
+        boolean yneg = y < 0;
+        if (yneg) {
+            y = -y;
+        }
+        double result = 1.0;
+        double squaring = x;
+        while (y > 0) {
+            if ((y & 0x01) == 0x01) {
+                result *= squaring;
+            }
+            y >>= 1;
+            if (y > 0) {
+                squaring *= squaring;
+            }
+        }
+        if (yneg) {
+            result = 1/result;
+        }
+        return result;
     }
 
 }
