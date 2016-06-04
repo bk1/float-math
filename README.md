@@ -1,3 +1,12 @@
+// -*- coding: utf-8-unix -*- Юникод/UTF-8
+
+(C) IT Sky Consulting GmbH 2015
+http://www.it-sky-consulting.com/
+Author: Karl Brodowsky
+Date: 2015-03-11
+License: GPL v2 (See https://de.wikipedia.org/wiki/GNU_General_Public_License)
+GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 of February 1999
+
 # float-math
 floating point functions that should be in Math class of Java standard library
 cot

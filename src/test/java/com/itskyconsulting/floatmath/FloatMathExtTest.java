@@ -1,7 +1,11 @@
 // -*- coding: utf-8-unix -*- Юникод/UTF-8
-
-// (C) Karl Brodowsky 2016
-// GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 of February 1999
+/* (C) IT Sky Consulting GmbH 2015
+ * http://www.it-sky-consulting.com/
+ * Author: Karl Brodowsky
+ * Date: 2015-03-11
+ * License: GPL v2 (See https://de.wikipedia.org/wiki/GNU_General_Public_License)
+ * GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 of February 1999
+ */
 
 package com.itskyconsulting.floatmath;
 
@@ -1132,29 +1136,29 @@ public class FloatMathExtTest {
         assertEquals("exp10(-Infinity)", 0, exp10(Double.NEGATIVE_INFINITY), 1e-100);
         assertEquals("exp2(-Infinity)", 0, exp2(Double.NEGATIVE_INFINITY), 1e-100);
     }
-    
+
     private static final double ULP_FACTOR = 9;
-    
+
     @Test
     public void testMathPowerWithIntExpCompare() {
-    	for (int i = -1000; i <= 1000; i++) {
+        for (int i = -1000; i <= 1000; i++) {
             double d = i;
             for (int j = 0; j < 100; j++) {
                 double found = Math.pow(d, j);
                 double expected = pow(d, j);
                 double diff = Math.abs(found - expected);
                 double rdiff = diff / Math.ulp(expected);
-                
+
                 //double delta = (Math.abs(expected) + Double.MIN_NORMAL)*1e-15;
                 double delta = ULP_FACTOR*(Math.ulp(found) + Math.ulp(expected));
                 assertEquals("i=" + i + " j=" + j + " diff=" + diff + " rdiff=" + rdiff + " delta=" + delta, expected, found, delta);
             }
-    	}
+        }
     }
-    
+
     @Test
     public void testMathPowerWithIntExp() {
-    	for (int i = -1000; i <= 1000; i++) {
+        for (int i = -1000; i <= 1000; i++) {
             double d = i;
             double expected = 1;
             for (int j = 0; j < 100; j++) {
@@ -1165,12 +1169,12 @@ public class FloatMathExtTest {
                 assertEquals("i=" + i + " j=" + j + " diff=" + diff + " rdiff=" + rdiff, expected, found, delta);
                 expected*= d;
             }
-    	}
+        }
     }
 
     @Test
     public void testPowerWithIntExp() {
-    	for (int i = -1000; i <= 1000; i++) {
+        for (int i = -1000; i <= 1000; i++) {
             double d = i;
             double expected = 1;
             for (int j = 0; j < 100; j++) {
@@ -1181,7 +1185,7 @@ public class FloatMathExtTest {
                 assertEquals("i=" + i + " j=" + j + " diff=" + diff + " rdiff=" + rdiff, expected, found, delta);
                 expected*= d;
             }
-    	}
+        }
     }
 
     /** x**y with integral y to compare with Math.pow */

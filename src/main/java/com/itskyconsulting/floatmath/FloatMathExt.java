@@ -1,6 +1,11 @@
 // -*- coding: utf-8-unix -*- Юникод/UTF-8
-// (C) Karl Brodowsky / IT Sky Consulting GmbH 2016
-// GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 of February 1999
+/* (C) IT Sky Consulting GmbH 2015
+ * http://www.it-sky-consulting.com/
+ * Author: Karl Brodowsky
+ * Date: 2015-03-11
+ * License: GPL v2 (See https://de.wikipedia.org/wiki/GNU_General_Public_License)
+ * GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 of February 1999
+ */
 
 package com.itskyconsulting.floatmath;
 
@@ -82,9 +87,9 @@ public class FloatMathExt {
     /** cot with degrees */
     public static double cotd(double x) {
         if (x < 0) {
-                return tand(-90 - x);
+            return tand(-90 - x);
         } else {
-                return tand(90 - x);
+            return tand(90 - x);
         }
     }
 
@@ -182,9 +187,9 @@ public class FloatMathExt {
         }
         // this improves precision
         if (s < 0) {
-                return -asinhInternal(-s);
+            return -asinhInternal(-s);
         } else {
-                return asinhInternal(s);
+            return asinhInternal(s);
         }
     }
 
@@ -248,9 +253,9 @@ public class FloatMathExt {
             return Double.NaN;
         }
         if (t < 0) {
-                return atanhIternal(t);
+            return atanhIternal(t);
         } else {
-                return -atanhIternal(-t);
+            return -atanhIternal(-t);
         }
     }
 
@@ -289,16 +294,16 @@ public class FloatMathExt {
             return 0.0;
         }
         if (t < 0) {
-                return -acothInternal(-t);
+            return -acothInternal(-t);
         } else {
-                return acothInternal(t);
+            return acothInternal(t);
         }
     }
 
-        private static double acothInternal(double t) {
-                double z = (t+1)/(t-1);
+    private static double acothInternal(double t) {
+        double z = (t+1)/(t-1);
         return Math.log(z) / 2;
-        }
+    }
 
     /**
      *  calculate the area secant (inverse of sech)
@@ -340,7 +345,7 @@ public class FloatMathExt {
     public static double exp2(double x) {
         return Math.pow(2, x);
     }
-            
+
     /** x**2 */
     public static double square(double x) {
         return x*x;
